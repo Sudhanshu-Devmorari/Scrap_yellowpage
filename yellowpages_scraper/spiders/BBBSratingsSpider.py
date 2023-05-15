@@ -1,5 +1,6 @@
 import scrapy, json
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 
 class BBBSratingsSpider(scrapy.Spider):
     name = 'bbb_ratings'
@@ -8,11 +9,10 @@ class BBBSratingsSpider(scrapy.Spider):
     client = MongoClient('mongodb://localhost:27017/')
     database = client['hyper_local']
     collection = database['core_details']
+    # collection.drop_index('__primary_key__')
 
     def start_requests(self):
-        with open('output_proxy_04.json','r') as f:
-        #     # print("++++++++", f)
-        #     # print("++++++++", type(f))
+        with open('output__04.json','r') as f:
             data = f.read()
         data = json.loads(data)
         print("++++++++", len(data))
@@ -37,10 +37,10 @@ class BBBSratingsSpider(scrapy.Spider):
 
 
         for business in data:
-            business_name = business['Name'].replace(" ", "%20")
+            business_name = business['name'].replace(" ", "%20")
         #     print("***********", business_name)
         #     # https://www.bbb.org/search?find_text=Essential%20Investing&find_loc=Phoenix%2C+AZ&page=1
-            search_url = f"https://www.bbb.org/search?find_text={business_name}&find_loc={business['City']}%2C+{business['State']}&page=1"
+            search_url = f"https://www.bbb.org/search?find_text={business_name}&find_loc={business['city']}%2C+{business['state']}&page=1"
             print("***********", search_url)
             yield scrapy.Request(search_url, headers=headers, callback=self.parse, meta={'business':business})
         # search_url = "https://www.bbb.org/search?find_text=Essential%20Investing&find_loc=Phoenix%2C+AZ&page=1"
@@ -77,8 +77,8 @@ class BBBSratingsSpider(scrapy.Spider):
         #     print("+++++++++++", rate)
 
         business = response.meta['business']
-        business['BBB_Rating'] = rating[-1]
-
+        business['bbb_rating'] = rating[-1]
+        business['id'] = str(ObjectId())
         self.collection.insert_one(business)
         yield business
 

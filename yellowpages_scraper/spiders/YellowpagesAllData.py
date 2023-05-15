@@ -73,20 +73,20 @@ class yellowpagesNewSpider(CrawlSpider):
 
 
         yield {
-            'Keyword': response.meta['keyword'],
-            'Categories': ', '.join(response.css('.categories .categories a::text').getall()).strip(),
-            'Name': response.css('h1.dockable.business-name::text').get(),
-            'Profile_url': response.meta['url'],
-            'Address': address,
-            'City': city,
-            'State': state,
-            'Postal_code': postalcode,
-            'Phone': response.css('a.phone.dockable strong::text').get(),
-            'Email': emails,
-            'Website': response.css('section.inner-section a:nth-child(2)::attr(href)').get(),
-            'Rating': response.css('div.rating-stars::attr(class)').get().split(" ")[1],
-            'Review': response.css('a.yp-ratings.hasExtraRating span.count::text').get(),
-            'Total_years_in_business': response.css('div.years-in-business div.number::text').get(),
+            'keyword': response.meta['keyword'],
+            'categories': ', '.join(response.css('.categories .categories a::text').getall()).strip(),
+            'name': response.css('h1.dockable.business-name::text').get(),
+            'profile_url': response.meta['url'],
+            'address': address,
+            'city': city,
+            'state': state,
+            'postal_code': postalcode,
+            'phone': response.css('a.phone.dockable strong::text').get(),
+            'email': emails,
+            'website': response.css('section.inner-section a:nth-child(2)::attr(href)').get(),
+            'rating': response.css('div.rating-stars::attr(class)').get().split(" ")[1],
+            'review': response.css('a.yp-ratings.hasExtraRating span.count::text').get(),
+            'years_in_business': response.css('div.years-in-business div.number::text').get(),
             'other_links': response.xpath('//dd[@class="weblinks"]/p/a/text()').getall()
         }
 
